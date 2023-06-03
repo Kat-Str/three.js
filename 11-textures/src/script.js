@@ -13,10 +13,49 @@ const scene = new THREE.Scene();
 /**
  * Object
  */
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load("/textures/minecraft.png");
+
+// texture.repeat.x = 2;
+// texture.repeat.y = 3;
+// texture.wrapS = THREE.RepeatWrapping;
+// texture.wrapT = THREE.RepeatWrapping;
+// texture.wrapS = THREE.MirroredRepeatWrapping;
+// texture.wrapT = THREE.MirroredRepeatWrapping;
+// texture.offset.x = 0.5;
+// texture.offset.y = 0.5;
+// texture.rotation = Math.PI * 0.25;
+// texture.center.x = 0.5
+// texture.center.y = 0.5
+
+// texture.minFilter = THREE.NearestFilter;
+texture.magFilter = THREE.NearestFilter;
+texture.generateMipmaps = false;
+
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const material = new THREE.MeshBasicMaterial({ map: texture });
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
+
+console.log(geometry.attributes.uv);
+
+// LoadingManager
+
+const loadingManager = new THREE.LoadingManager();
+loadingManager.onStart = () => {
+  console.log("loading started");
+};
+loadingManager.onLoad = () => {
+  console.log("loading finished");
+};
+loadingManager.onProgress = () => {
+  console.log("loading progressing");
+};
+loadingManager.onError = () => {
+  console.log("loading error");
+};
+
+const textureLoaderWithManager = new THREE.TextureLoader(loadingManager);
 
 /**
  * Sizes
