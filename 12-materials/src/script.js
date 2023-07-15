@@ -15,7 +15,7 @@ const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
 const doorRoughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
 
 const matcapTexture = textureLoader.load("/textures/matcaps/3.png");
-const gradientTexture = textureLoader.load("/textures/gradients/3.jpg");
+const gradientTexture = textureLoader.load("/textures/gradients/5.jpg");
 
 /**
  * Base
@@ -25,6 +25,18 @@ const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
+
+/**
+ * Lights
+ */
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 0.5);
+pointLight.position.x = 2;
+pointLight.position.y = 3;
+pointLight.position.z = 4;
+scene.add(pointLight);
 
 // Objects
 
@@ -52,6 +64,39 @@ normalMaterial.flatShading = true;
 const matcapMaterial = new THREE.MeshMatcapMaterial();
 matcapMaterial.matcap = matcapTexture;
 
+// MeshDepthMaterial
+
+const depthMaterial = new THREE.MeshDepthMaterial();
+
+// MeshLambertMaterial
+
+const lambertMaterial = new THREE.MeshLambertMaterial();
+lambertMaterial.color = new THREE.Color("indigo");
+
+// MeshPhongMaterial
+
+const phongMaterial = new THREE.MeshPhongMaterial();
+phongMaterial.shininess = 100;
+phongMaterial.specular = new THREE.Color(0x1188ff);
+
+// MeshToonMaterial
+
+const toonMaterial = new THREE.MeshToonMaterial();
+toonMaterial.gradientMap = gradientTexture;
+gradientTexture.minFilter = THREE.NearestFilter;
+gradientTexture.magFilter = THREE.NearestFilter;
+gradientTexture.generateMipmaps = false;
+
+// MeshStandardMaterial
+
+const standardMaterial = new THREE.MeshStandardMaterial();
+standardMaterial.map = doorColorTexture;
+standardMaterial.aoMap = doorAmbientOcclusionTexture;
+standardMaterial.aoMapIntensity = 10;
+standardMaterial.metalnessMap = doorMetalnessTexture;
+standardMaterial.roughnessMap = doorRoughnessTexture;
+standardMaterial.normalMap = doorNormalTexture;
+
 // Geometries
 
 const sphere = new THREE.Mesh(
@@ -68,7 +113,38 @@ const torus = new THREE.Mesh(
 );
 torus.position.x = 1.5;
 
-scene.add(sphere, plane, torus);
+const capsule = new THREE.Mesh(
+  new THREE.CapsuleGeometry(0.3, 0.3, 2, 5),
+  depthMaterial
+);
+capsule.position.y = 1.5;
+
+const knot = new THREE.Mesh(
+  new THREE.TorusKnotGeometry(0.2, 0.1, 64, 12),
+  lambertMaterial
+);
+knot.position.x = 1.5;
+knot.position.y = 1.5;
+
+const torusTwo = new THREE.Mesh(
+  new THREE.TorusGeometry(0.3, 0.1, 16, 32),
+  phongMaterial
+);
+torusTwo.position.x = -1.5;
+torusTwo.position.y = 1.5;
+
+const ball = new THREE.Mesh(
+  new THREE.SphereGeometry(0.5, 16, 16),
+  toonMaterial
+);
+ball.position.x = 1.5;
+ball.position.y = -1.5;
+
+const door = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), standardMaterial);
+door.position.x = -1.5;
+door.position.y = -1.5;
+
+scene.add(sphere, plane, torus, capsule, knot, torusTwo, ball, door);
 
 /**
  * Sizes
