@@ -17,6 +17,19 @@ const doorRoughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
 const matcapTexture = textureLoader.load("/textures/matcaps/3.png");
 const gradientTexture = textureLoader.load("/textures/gradients/5.jpg");
 
+// Environment map
+
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+
+const environmentMapTexture = cubeTextureLoader.load([
+  "/textures/environmentMaps/0/px.jpg",
+  "/textures/environmentMaps/0/nx.jpg",
+  "/textures/environmentMaps/0/py.jpg",
+  "/textures/environmentMaps/0/ny.jpg",
+  "/textures/environmentMaps/0/pz.jpg",
+  "/textures/environmentMaps/0/nz.jpg",
+]);
+
 /**
  * Base
  */
@@ -72,12 +85,14 @@ const depthMaterial = new THREE.MeshDepthMaterial();
 
 const lambertMaterial = new THREE.MeshLambertMaterial();
 lambertMaterial.color = new THREE.Color("indigo");
+lambertMaterial.envMap = environmentMapTexture;
 
 // MeshPhongMaterial
 
 const phongMaterial = new THREE.MeshPhongMaterial();
 phongMaterial.shininess = 100;
 phongMaterial.specular = new THREE.Color(0x1188ff);
+phongMaterial.envMap = environmentMapTexture;
 
 // MeshToonMaterial
 
@@ -144,7 +159,10 @@ const door = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), standardMaterial);
 door.position.x = -1.5;
 door.position.y = -1.5;
 
-scene.add(sphere, plane, torus, capsule, knot, torusTwo, ball, door);
+const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), phongMaterial);
+box.position.y = -1.5;
+
+scene.add(sphere, plane, torus, capsule, knot, torusTwo, ball, door, box);
 
 /**
  * Sizes
